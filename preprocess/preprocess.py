@@ -11,10 +11,10 @@ import sys
 sys.path.append('../')
 # from data.ct_transform_drr import *
 
-
+#  重定向
 def ct_reorient(img, axcodes_to=('L', 'P', 'S')):
     """Reorients the nifti from its original orientation to another specified orientation
-
+    
     Parameters:
     ----------
     img: nibabel image
@@ -37,6 +37,8 @@ def ct_reorient(img, axcodes_to=('L', 'P', 'S')):
     print("[*] Image reoriented from", nio.ornt2axcodes(ornt_fr), "to", axcodes_to)
     return newimg
 
+
+# 重采样
 def ct_resample(img, voxel_spacing=(1, 1, 1), order=3):
     """Resamples the nifti from its original spacing to another specified spacing
 
@@ -65,6 +67,8 @@ def ct_resample(img, voxel_spacing=(1, 1, 1), order=3):
     new_img = nip.resample_from_to(img, (new_shp, new_aff), order=order, cval=-1024)
     print("[*] Image resampled to voxel size:", voxel_spacing)
     return new_img
+
+# 读质心
 
 def get_json(ctd_path):
     with open(ctd_path) as json_data:

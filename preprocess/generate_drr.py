@@ -8,10 +8,11 @@ from tqdm import tqdm
 
 def plastimatch_drr(input_file, output_dir):
     # parameters
-    N_views = 10
-    sad = 500
-    sid = 1000
-
+    N_views = 10 # 投影视图数
+    sad = 500 # 源-检器距离
+    sid = 1000 # 投影源到物体的距离
+                                                #Note: **SAD**：X 射线源与旋转轴（等中心）之间的距离，单位为 mm2.  
+                                                #Note: **SID**：X 射线源和探测器之间的距离，单位为 mm （SID >= SAD）
     image = sitk.ReadImage(input_file)
     image_arr = sitk.GetArrayFromImage(image)
 
@@ -21,14 +22,14 @@ def plastimatch_drr(input_file, output_dir):
     volume_phy = volume_spacing * (volume_resolution) #CT volume物理尺寸 单位mm
 
     proj_phy = volume_phy * sid / sad #projection的物理尺寸
-    proj_phy = proj_phy[-2:]
-    proj_spacing = volume_spacing * sid / sad #projection spacing 单位mm/pixel
-    proj_spacing = proj_spacing[-2:]
+    proj_phy = proj_phy[-2:] #只取前两个维度,投影图像只有宽和高
+    proj_spacing = volume_spacing * sid / sad #projection spacing 单位mm/pixel 投影间距
+    proj_spacing = proj_spacing[-2:] #只取前两个维度
     proj_resolution = np.round(proj_phy / proj_spacing).astype(int)  #CT volume投影的像素尺寸 可以认为=volume_resolution
 
     proj_spacing = proj_phy / proj_resolution # 微小改动spacing
 
-    isocenter = volume_origin + volume_phy / 2
+    isocenter = volume_origin + volume_phy / 2 # 等效源点位置
 
     params = {
         # 'angle_per_view': angle_per_view,
@@ -39,7 +40,7 @@ def plastimatch_drr(input_file, output_dir):
         'volume_spacing': volume_spacing.tolist(),
         'volume_origin': volume_origin.tolist(),
         'volume_phy': volume_phy.tolist(),
-        'proj_resolution': [1024,1024],#proj_resolution.tolist(),
+        'proj_resolution': [1024,1024],#proj_resolution.tolist(),  分辨率固定为1024*1024
         'proj_spacing': [2,2],#proj_spacing.tolist(),
         'proj_phy': [2048,2048],#proj_phy.tolist(),
         'isocenter': isocenter.tolist(),

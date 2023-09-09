@@ -9,6 +9,10 @@ import sys
 sys.path.append(".")
 from dataset.drr_dataset import get_json
 def create_Gaussian(Gaussian_size = 7, sigma = 3):
+    ''' 产生高斯核
+    高斯核的作用: 
+    
+    '''
     sum = 0
     kernel = np.zeros((Gaussian_size,Gaussian_size))
     k = int(Gaussian_size / 2) + 1
